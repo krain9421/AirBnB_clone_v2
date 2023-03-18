@@ -1,6 +1,7 @@
 <center> <h1>0x02. AirBnB clone - MySQL</h1> </center>
 
 The project you will fork this codebase:
+---
 
 update the repository name to AirBnB_clone_v2
 update the README.md with your information but don’t delete the initial authors
