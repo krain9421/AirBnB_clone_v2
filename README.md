@@ -25,9 +25,8 @@ update the README.md with your information but don’t delete the initial author
 
 
 ###### Project Authour: 
-Oladejo Fisayo 
+Oladejo Fisayo &
 Nwigwe Chidubem William
 ```
-<br>
 
 
