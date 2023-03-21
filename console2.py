@@ -65,7 +65,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline.partition(', ')  # pline convert to tuple
 
                 # isolate _id, stripping quotes
-                #_id = pline[0].replace('\"', '')
+                _id = pline[0].replace('\"', '')
                 # possible bug here:
                 # empty quotes register as empty _id when replaced
 
@@ -80,8 +80,6 @@ class HBNBCommand(cmd.Cmd):
                         _args = pline.replace(',', '')
                         # _args = _args.replace('\"', '')
             line = ' '.join([_cmd, _cls, _id, _args])
-            # DEBUGGING
-            print("-------DEBUGGING-------\n{}".format(line))
 
         except Exception as mess:
             pass
@@ -117,54 +115,13 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        # partitioning the args
-        args = args.partition(" ")
-        if not args[0]:
+        if not args:
             print("** class name missing **")
             return
-        elif args[0] not in HBNBCommand.classes:
+        elif args not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args[0]]()
-        
-        # handling other arguments (<param 1> <param 2>...)
-        my_dict = {}
-        if args[2]: # if other arguments are present
-            # Split the arguments into a list
-            args_list = args[2].split()
-            for param in args_list:
-                try:
-                    key, value = param.split('=')
-                    if value[0] == "\"": # if it starts with double quotes
-                        value = value[1:value.find("\"", 1)]
-                        # Replace underscores with spaces
-                        value = value.replace('_', ' ')
-                        my_dict[key] = value
-
-                    # Check if value is a decimal
-                    elif '.' in value:
-                        try:
-                            value = float(value)
-                            my_dict[key] = value
-                        except ValueError:
-                            pass
-                    else:
-                        try:
-                            value = int(value)
-                            my_dict[key] = value
-                        except ValueError:
-                            pass
-
-                except ValueError:
-                    pass
-
-            # my_dict[key] = value
-            # Retrieve dictionary of current objects
-            key = args[0] + '.' + new_instance.id
-            new_dict = storage.all()[key]
-            new_dict.__dict__.update(my_dict)
-            new_dict.save()
-
+        new_instance = HBNBCommand.classes[args]()
         storage.save()
         print(new_instance.id)
         storage.save()

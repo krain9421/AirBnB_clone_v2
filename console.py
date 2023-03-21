@@ -73,13 +73,15 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is'}'\
+                    if pline[0] == '{' and pline[-1] == '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
                         _args = pline.replace(',', '')
                         # _args = _args.replace('\"', '')
             line = ' '.join([_cmd, _cls, _id, _args])
+            # DEBUGGING
+            print("-------DEBUGGING-------\n{}".format(line))
 
         except Exception as mess:
             pass
@@ -115,13 +117,54 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        if not args:
+        # partitioning the args
+        args = args.partition(" ")
+        if not args[0]:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        elif args[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
+        new_instance = HBNBCommand.classes[args[0]]()
+
+        # handling other arguments (<param 1> <param 2>...)
+        my_dict = {}
+        if args[2]:  # if other arguments are present
+            # Split the arguments into a list
+            args_list = args[2].split()
+            for param in args_list:
+                try:
+                    key, value = param.split('=')
+                    if value[0] == "\"":  # if it starts with double quotes
+                        value = value[1:value.find("\"", 1)]
+                        # Replace underscores with spaces
+                        value = value.replace('_', ' ')
+                        my_dict[key] = value
+
+                    # Check if value is a decimal
+                    elif '.' in value:
+                        try:
+                            value = float(value)
+                            my_dict[key] = value
+                        except ValueError:
+                            pass
+                    else:
+                        try:
+                            value = int(value)
+                            my_dict[key] = value
+                        except ValueError:
+                            pass
+
+                except ValueError:
+                    pass
+
+            # my_dict[key] = value
+            # Retrieve dictionary of current objects
+            key = args[0] + '.' + new_instance.id
+            new_dict = storage.all()[key]
+            new_dict.__dict__.update(my_dict)
+            new_dict.save()
+
         storage.save()
         print(new_instance.id)
         storage.save()
@@ -187,7 +230,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
+            del (storage.all()[key])
             storage.save()
         except KeyError:
             print("** no instance found **")
@@ -272,7 +315,7 @@ class HBNBCommand(cmd.Cmd):
                 args.append(v)
         else:  # isolate args
             args = args[2]
-            if args and args[0] is '\"':  # check for quoted arg
+            if args and args[0] == '\"':  # check for quoted arg
                 second_quote = args.find('\"', 1)
                 att_name = args[1:second_quote]
                 args = args[second_quote + 1:]
@@ -280,10 +323,10 @@ class HBNBCommand(cmd.Cmd):
             args = args.partition(' ')
 
             # if att_name was not quoted arg
-            if not att_name and args[0] is not ' ':
+            if not att_name and args[0] != ' ':
                 att_name = args[0]
             # check for quoted val arg
-            if args[2] and args[2][0] is '\"':
+            if args[2] and args[2][0] == '\"':
                 att_val = args[2][1:args[2].find('\"', 1)]
 
             # if att_val was not quoted arg
@@ -319,6 +362,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
