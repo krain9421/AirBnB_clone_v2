@@ -6,10 +6,10 @@ $nginx_conf = "server {
     listen [::]:80 default_server;
     add_header X-Served-By ${hostname};
     root   /var/www/html;
-    index  index.html index.htm;
+    index  index.html;
     location /hbnb_static {
         alias /data/web_static/current;
-        index index.html index.htm;
+        index index.html;
     }
     location /redirect_me {
         return 301 http://cuberule.com/;
@@ -26,17 +26,6 @@ package { 'nginx':
   provider => 'apt'
 } ->
 
-file { '/data':
-  ensure  => 'directory'
-} ->
-
-file { '/data/web_static':
-  ensure => 'directory'
-} ->
-
-file { '/data/web_static/releases':
-  ensure => 'directory'
-} ->
 
 file { '/data/web_static/releases/test':
   ensure => 'directory'
@@ -48,7 +37,7 @@ file { '/data/web_static/shared':
 
 file { '/data/web_static/releases/test/index.html':
   ensure  => 'present',
-  content => "Holberton School Puppet\n"
+  content => "Test Nginx Page\n"
 } ->
 
 file { '/data/web_static/current':
