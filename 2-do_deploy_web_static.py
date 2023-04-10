@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """
-    Distributing an archiave to the web servers.
+    Distributing an archive to the web servers.
 """
 from os import path
-from fabric.api import *
+from fabric.api import run, put, env
 
 env.hosts = ['54.236.53.229', '18.204.7.180']
 
