@@ -161,12 +161,14 @@ class HBNBCommand(cmd.Cmd):
             # my_dict[key] = value
             # Retrieve dictionary of current objects
             key = args[0] + '.' + new_instance.id
-            new_dict = storage.all()[key]
-            new_dict.__dict__.update(my_dict)
-            new_dict.save()
+            # new_dict = storage.all()[key]
+            # new_dict.__dict__.update(my_dict)
+            # new_dict.save()
+            new_instance.__dict__.update(my_dict)
 
         new_instance.save()
         print(new_instance.id)
+        storage.all()
         storage.save()
 
     def help_create(self):
