@@ -165,7 +165,7 @@ class HBNBCommand(cmd.Cmd):
             new_dict.__dict__.update(my_dict)
             new_dict.save()
 
-        storage.save()
+        new_instance.save()
         print(new_instance.id)
         storage.save()
 
