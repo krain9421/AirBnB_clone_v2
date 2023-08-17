@@ -3,11 +3,16 @@
 from sqlalchemy.ext.declarative import declarative_base
 import uuid
 import models
+from os import getenv
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime
 
 timeFormat = "%Y-%m-%dT%H:%M:%S.%f"
-Base = declarative_base()
+
+if getenv("HBNB_TYPE_STORAGE") == "db":
+    Base = declarative_base()
+else:
+    Base = object
 
 
 class BaseModel:

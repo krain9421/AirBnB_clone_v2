@@ -15,18 +15,27 @@ class State(BaseModel, Base):
     Attributes:
         name: input name
     """
-    __tablename__ = "states"
-    name = Column(String(128), nullable=False)
-    cities = relationship("City", cascade='all, delete, delete-orphan',
+    if getenv("HBNB_TYPE_STORAGE") == "db":
+        __tablename__ = "states"
+        name = Column(String(128), nullable=False)
+        cities = relationship("City", cascade='all, delete, delete-orphan',
                           backref="state")
+    else:
+        name = ""
+
+    def __init__(self, *args, **kwargs):
+        """Initializes a State object"""
+        super().__init__(*args, **kwargs)
 
     if getenv("HBNB_TYPE_STORAGE") != "db":
         @property
         def cities(self):
+            """getter to retrieve a list of cities related to a state"""
             var = models.storage.all()
             lista = []
             result = []
             for key in var:
+                """loop through the instances and append city instances to a list"""
                 city = key.replace('.', ' ')
                 city = shlex.split(city)
                 if (city[0] == 'City'):
